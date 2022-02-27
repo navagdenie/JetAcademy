@@ -1,0 +1,141 @@
+package tictactoe;
+
+import java.util.Scanner;
+
+public class Main {
+
+    private static void getGrid(String inp, char[][] arr) {
+
+        int n = 0;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                arr[i][j] = inp.charAt(n);
+                n++;
+            }
+        }
+    }
+
+    private static void printGrid(char[][] arr){
+
+        System.out.println("---------");
+        for (int i = 0; i < 3; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < 3; j++) {
+                System.out.print(arr[i][j]  + " ");
+            }
+            System.out.print("|");
+            System.out.println();
+        }
+        System.out.println("---------");
+    }
+
+    private static void makeStep(char[][] arr, char s){
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the coordinates:");
+
+        while(true) {
+            String inpX = scanner.next();
+            String inpY = scanner.next();
+
+            if (!"123456789".contains(inpX) || !"123456789".contains(inpY)) {
+                System.out.println("You should enter numbers!");
+                continue;
+            }
+
+            if (Integer.parseInt(inpX) < 1 || Integer.parseInt(inpX) > 3
+                    || Integer.parseInt(inpY) < 1 || Integer.parseInt(inpY) > 3) {
+                System.out.println("Coordinates should be from 1 to 3!");
+                continue;
+            }
+
+            if ('_' != arr[Integer.parseInt(inpX) - 1][Integer.parseInt(inpY) - 1]) {
+                System.out.println("This cell is occupied! Choose another one!");
+                continue;
+            }
+
+            arr[Integer.parseInt(inpX) - 1][Integer.parseInt(inpY) - 1] = s;
+            break;
+        }
+    }
+
+    private static boolean checkGrid(char[][] arr){
+
+        boolean win = false;
+        boolean notFinished = false;
+        char winner = 0;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if ("_".charAt(0) == arr[i][j]) {
+                    notFinished = true;
+                    break;
+                }
+            }
+            if (notFinished) {
+                break;
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (arr[i][0] == arr[i][1] && arr[i][1] == arr[i][2] && arr[i][0] != '_') {
+                win = true;
+                winner = arr[i][0];
+            } else if (arr[0][i] == arr[1][i] && arr[1][i] == arr[2][i] && arr[0][i] != '_') {
+                win = true;
+                winner = arr[0][i];
+            }
+        }
+
+        if (arr[0][0] == arr[1][1] && arr[1][1] == arr[2][2] && arr[0][0] != '_') {
+            win = true;
+            winner = arr[0][0];
+        }
+
+        if (arr[0][2] == arr[1][1] && arr[1][1] == arr[2][0] && arr[1][1] != '_') {
+            win = true;
+            winner = arr[0][2];
+        }
+
+        if (win) {
+            System.out.println(winner + " wins");
+            return true;
+        } else if (notFinished) {
+            return false;
+        } else {
+            System.out.println("Draw");
+            return true;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        String inp = "_________";
+
+        char[][] arr = new char[3][3];
+        getGrid(inp, arr);
+
+        printGrid(arr);
+
+        int n = 0;
+        char s;
+        boolean gameFinished;
+
+        while(true){
+            if (n % 2 == 0) {
+                s = 'X';
+            } else {
+                s = 'O';
+            }
+            n++;
+            makeStep(arr, s);
+            printGrid(arr);
+            gameFinished = checkGrid(arr);
+            if (gameFinished) {
+                break;
+            }
+        }
+    }
+}
