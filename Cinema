@@ -1,0 +1,124 @@
+package cinema;
+
+import java.util.Scanner;
+
+public class Cinema {
+
+    static int pTickets = 0;
+    static int income = 0;
+
+    private static void printMenu(){
+
+        System.out.println("1. Show the seats");
+        System.out.println("2. Buy a ticket");
+        System.out.println("3. Statistics");
+        System.out.println("0. Exit");
+
+    }
+
+    private static void printSeats(char[][] arr){
+
+        System.out.println("Cinema:");
+
+        System.out.print("  ");
+        for (int i = 0; i < arr[0].length; i++) {
+            System.out.print(i + 1 + " ");
+        }
+        System.out.println();
+
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(i + 1 + " ");
+            for (int j = 0; j < arr[0].length; j++) {
+                System.out.print(arr[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static void buyTicket(char[][] arr){
+
+        Scanner scanner = new Scanner(System.in);
+
+        while (true){
+
+            System.out.println("Enter a row number:");
+            int row = scanner.nextInt();
+
+            System.out.println("Enter a seat number in that row:");
+            int seat = scanner.nextInt();
+
+            if (row < 0 || row > arr.length || seat < 0 || seat > arr[0].length) {
+                System.out.println("Wrong input!");
+            } else if (arr[row - 1][seat - 1] == 'B') {
+                System.out.println("That ticket has already been purchased!");
+            } else {
+                if (arr.length * arr[0].length > 60 && arr.length / 2 < row) {
+                    System.out.println("Ticket price: $8");
+                    income += 8;
+                } else {
+                    System.out.println("Ticket price: $10");
+                    income += 10;
+                }
+
+                arr[row - 1][seat - 1] = 'B';
+                pTickets++;
+
+                break;
+            }
+        }
+    }
+
+    private static void printStatistic(char[][] arr){
+
+        float percent = arr.length * arr[0].length == 0 ? 0f : (float) pTickets / (arr.length * arr[0].length) * 100f;
+        int total;
+        if (arr.length * arr[0].length > 60) {
+            total = arr.length  / 2 * arr[0].length * 10 + (arr.length / 2 + arr.length % 2) * arr[0].length * 8;
+        } else {
+            total = arr.length * arr[0].length * 10;
+        }
+
+        String str1 = String.format("Number of purchased tickets: %d", pTickets);
+        String str2 = String.format("Percentage: %.2f", percent);
+        String str3 = String.format("Current income: $%d", income);
+        String str4 = String.format("Total income: $%d", total);
+
+        System.out.println(str1);
+        System.out.println(str2 + "%");
+        System.out.println(str3);
+        System.out.println(str4);
+    }
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the number of rows:");
+        int rows = scanner.nextInt();
+
+        System.out.println("Enter the number of seats in each row:");
+        int seats = scanner.nextInt();
+
+        char[][] arr = new char[rows][seats];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < seats; j++) {
+                arr[i][j] = 'S';
+            }
+        }
+
+        int answer;
+        while (true) {
+            printMenu();
+            answer = scanner.nextInt();
+            if (answer == 1) {
+                printSeats(arr);
+            } else if (answer == 2){
+                buyTicket(arr);
+            } else if (answer == 0){
+                break;
+            } else if (answer == 3){
+                printStatistic(arr);
+            }
+        }
+    }
+}
